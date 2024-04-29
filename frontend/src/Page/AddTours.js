@@ -101,7 +101,6 @@ function Addtours() {
   return (
     <div className="p-3">
     <form className='m-auto w-full max-w-md  shadow flex flex-col p-1 bg-white' onSubmit={handleSubmit}>
-      <label htmlFor="title">Admin Tours</label>
       <label htmlFor="name">Name of the place</label>
       <input type="text" name='name' onChange={handleOnChange}  className='bg-slate-300 rounded p-1 my-1 p-1' value={data.name}/>
 
@@ -121,6 +120,7 @@ function Addtours() {
   <option value="Gujarat">Gujarat</option>
   <option value="Haryana">Haryana</option>
   <option value="Himachal Pradesh">Himachal Pradesh</option>
+  <option value="Puducherry">Jammu & Kashmir</option>
   <option value="Jharkhand">Jharkhand</option>
   <option value="Karnataka">Karnataka</option>
   <option value="Kerala">Kerala</option>
@@ -147,6 +147,7 @@ function Addtours() {
   <option value="Lakshadweep">Lakshadweep</option>
   <option value="Delhi">Delhi</option>
   <option value="Puducherry">Puducherry</option>
+
       </select>
 
       <label htmlFor="address">Address</label>

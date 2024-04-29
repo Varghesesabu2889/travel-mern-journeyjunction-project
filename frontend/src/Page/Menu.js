@@ -24,7 +24,7 @@ const Menu = () => {
       return;
     }
     dispatch(addcityItem(tourDisplay))
-    toast.success(` added to booking`);
+    toast.success(`${tourDisplay.name} added to booking`);
   };
 
   

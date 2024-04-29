@@ -14,7 +14,8 @@ import { Provider } from 'react-redux'  ;
 import Booking from './Page/Cart';
 import Tours from './Page/Tours';
 import Menu from './Page/Menu';
-
+import ImageGallery from './components/ImageGallery';
+import './bootstrap.min.css'
 
 const router=createBrowserRouter(
   createRoutesFromElements(
@@ -28,6 +29,8 @@ const router=createBrowserRouter(
       <Route path="addtours" element={<AddTours/>} />
       <Route path="signup" element={<Signup/>} />
        <Route path="trip" element={<Booking/>} />
+       <Route path="gallery" element={<ImageGallery/>} />   
+
       
       
       

@@ -1,24 +1,25 @@
+// Import required modules
 const dotenv = require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
+// Initialize Express app
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 
+// Set the port
 const PORT = process.env.PORT || 8080;
 
-// mongodb connection
-// console.log(process.env.MONGODB_URL);
-mongoose.set('strictQuery', false);
-mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("Connected to database"))
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URL)
+  .then(() => console.log(`Connected to Journey Junction DB & at port ${PORT}`))
   .catch((err) => console.log(err));
 
-// schema
+// Define user schema
 const userSchema = mongoose.Schema({
- email: {
+  email: {
     type: String,
     unique: true,
   },
@@ -26,18 +27,28 @@ const userSchema = mongoose.Schema({
   confirmPassword: String,
   image: String,
 });
-
-// userModel
 const userModel = mongoose.model("user", userSchema);
 
-// api
+// Define tour schema
+const addToursSchema = mongoose.Schema({
+  name: String,
+  city: String,
+  address: String,
+  distance: String,
+  price: String,
+  maxGroupSize: String,
+  desc: String,
+  image: String,
+});
+const addTourModel = mongoose.model("addTour", addToursSchema);
+
+// API routes
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
 
-// signup
+// Signup route
 app.post("/signup", async (req, res) => {
-  // console.log(req.body);
   const { email } = req.body;
 
   try {
@@ -50,81 +61,52 @@ app.post("/signup", async (req, res) => {
       res.send({ message: "Successfully signed up", alert: true });
     }
   } catch (error) {
-    // console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// api login
+// Login route
 app.post("/login", async (req, res) => {
-  // console.log(req.body);
   const { email, password } = req.body;
   try {
     const result = await userModel.findOne({ email: email, password: password }).exec();
     if (result) {
-
       const dataSend = {
         _id: result._id,
         email: result.email,
         image: result.image,
-
       };
-      // console.log(dataSend);
-
-
-      res.send({message: "Login is successful", alert: true, data: dataSend });
+      res.send({ message: "Login is successful", alert: true, data: dataSend });
     } else {
-      res.send({ message: "Email or Password  error", alert: false, });
+      res.send({ message: "Email or Password error", alert: false });
     }
   } catch (error) {
-    // console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// add tours
-
-const addTours = mongoose.Schema({
-  name: String,
-  city: String,
-  address:String,
-  distance:String,
-  price: String,
-  maxGroupSize: String,
-  desc: String,
-  image:String
-
+// Upload tour route
+app.post("/uploadtour", async (req, res) => {
+  const data = new addTourModel(req.body);
+  try {
+    const savedData = await data.save();
+    res.send({ message: "Tour uploaded Successfully!" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
-const addTourModel = mongoose.model("addTour", addTours);
 
-// add tours in db
+// Retrieve all tours route
+app.get("/tour", async (req, res) => {
+  try {
+    const data = await addTourModel.find({});
+    res.send(JSON.stringify(data));
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
-app.post("/uploadtour",async(req,res)=>{
-  // console.log(req.body);
-const data =await addTourModel(req.body)
-const datasave =  await data.save()
-  res.send({message : "Tour uploaded Successfully!"})
-
-})
- 
-// 
-app.get("/tour",async(req,res)=>{
-  const data =await addTourModel.find({})
-res.send(JSON.stringify(data))
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Start the server
 app.listen(PORT, () => {
-  console.log("Server is running at port: " + PORT);
+  // console.log("Server is running at port: " + PORT);
 });
